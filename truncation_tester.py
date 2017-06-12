@@ -35,12 +35,12 @@ class TruncatorTester:
 
     def count_raw_character_difference(self, df):
         def raw_character_difference(word1, word2):
-            return len(word1)-len(word2)
+            return len(str(word1))-len(str(word2))
         df["raw_character_difference"] = list(map(raw_character_difference, df["Word"], df["Truncation"]))
         return df
 
     def count_lev_distance(self, df):
-        df["lev_distance"] = list(map(lev.distance, df["Word"], df["Truncation"]))
+        df["lev_distance"] = list(map(lev.distance, df["Word"].apply(str), df["Truncation"].apply(str)))
         return df
 
     def count_total_words(self, df):
@@ -49,6 +49,6 @@ class TruncatorTester:
     def count_width_difference(self, font_filepath, df):
         size_calc = font_size_calculator.FontSizeCalculator()
         def row_width_difference(word1, word2):
-            return size_calc.size_of_string(font_filepath, word1)["width"] - size_calc.size_of_string(font_filepath, word2)["width"]
+            return size_calc.size_of_string(font_filepath, str(word1))["width"] - size_calc.size_of_string(font_filepath, str(word2))["width"]
         df["width_difference"] = list(map(row_width_difference, df["Word"], df["Truncation"]))
         return df
