@@ -3,22 +3,29 @@
 import copy
 import Levenshtein as lev
 
+def make_block(word_list, middle_index, radius):
+	start = max(0, middle_index - radius)
+	end = min(len(word_list), middle_index + radius+1)
+	return (word_list[start:middle_index], word_list[middle_index], word_list[middle_index+1:end])
+
+def sanitize_word_list(word_list):
+	return [sanitize_word(word) for word in word_list]
+
+def sanitize_word(word):
+	return word.lower()
+	
 def make_assoc_dic(word_list, association_radius):
 	""" Make an association dictionary """
-
+	word_list = sanitize_word_list(word_list)
 	# Set up variables
 	assoc_dic = dict()
 	word_seq = copy.deepcopy(word_list)
 	block_length = 2 * association_radius + 1
 
 	# Actually do things
-	for i in range(len(word_list)):
+	for middle_index in range(len(word_list)):
 		# Find the blocks
-		start = min(0, i - association_radius)
-		end = max(len(word_list), i + association_radius)
-		before_block = word_seq[start : i]
-		word = word_seq[i]
-		after_block = word_seq[i : end]
+		(before_block, word, after_block) = make_block(word_list, middle_index, association_radius)
 		# Reverse the before_block
 		before_block.reverse()
 		# Feed blocks into counter
@@ -57,6 +64,7 @@ def get_strong_associates(assoc_dic, word, distance, strong_threshold):
 def get_potential_synonyms(word_list, assoc_dic, word, strong_threshold, weak_threshold):
 	# NORMALIZATION HAPPENS HERE.  but i feel i can get easily confused, because get_strong_associates needs to be given a normalized threshold.  and how to remember that?
 	# normalize the thresholds
+	word_list = sanitize_word_list(word_list)
 	number_of_times_word_appears = word_list.count(word)
 	strong_threshold = strong_threshold * number_of_times_word_appears
 	weak_threshold = weak_threshold * number_of_times_word_appears
@@ -77,7 +85,7 @@ def weed_out_synonyms(word, potential_synonyms):
 	for synonym in potential_synonyms:
 		max_distance = abs(len(word) - len(synonym))
 		abbr_len = min(len(word), len(synonym))
-		forgiveness = 1 + 1/7 * abbr_len
+		forgiveness = round(1/7 * abbr_len)
 		if lev.distance(word, synonym) <= max_distance + forgiveness:
 			# Then it's a synonym!
 			real_synonyms.add(synonym)
