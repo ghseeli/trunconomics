@@ -1,6 +1,7 @@
 from run_truncation_on_wordlist import *
 from vowel_removal_truncator import *
-from truncation_tester import *
+from truncator_tester import *
+
 truncator = VowelRemovalTruncator()
 runner = TruncationOnWordlistRunner("./wordsEn.csv","./out.csv")
 result = runner.run_truncator_on_wordlist(truncator)
