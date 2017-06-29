@@ -12,29 +12,29 @@ from pyparsing import Word, CharsNotIn, Group, Optional, Suppress, ZeroOrMore
 class ArticleReader:
 
 
-	def __init__(self):
-		self.init_parser()
+    def __init__(self):
+        self.init_parser()
 
-	def init_parser(self):
-		# these variables will be used to define valid lists of characters
-		lowers = 'qwertyuiopasdfghjklzxcvbnm'
-		uppers = lowers.upper()
-		word_symbols = '-_'
-		digits = '1234567890'
-		word_chars = lowers + uppers + word_symbols + digits
+    def init_parser(self):
+        # these variables will be used to define valid lists of characters
+        lowers = 'qwertyuiopasdfghjklzxcvbnm'
+        uppers = lowers.upper()
+        word_symbols = '-_'
+        digits = '1234567890'
+        word_chars = lowers + uppers + word_symbols + digits
 
-		# define grammar
-		word = Word(word_chars)
-		delim = CharsNotIn(word_chars)
-		delim_and_word = Group(Suppress(Optional(delim)) + word)
-		content = ZeroOrMore(delim_and_word) # 'content' is a grammar object.
+        # define grammar
+        word = Word(word_chars)
+        delim = CharsNotIn(word_chars)
+        delim_and_word = Group(Suppress(Optional(delim)) + word)
+        content = ZeroOrMore(delim_and_word) # 'content' is a grammar object.
 
-		self.parser = content.parseString
+        self.parser = content.parseString
 
-	def get_word_list(self, article_string):
-		parsed_data = self.parser(article_string)
-		word_list = [group[0] for group in parsed_data]
-		return word_list
+    def get_word_list(self, article_string):
+        parsed_data = self.parser(article_string)
+        word_list = [group[0] for group in parsed_data]
+        return word_list
 
 
 # try parsing
