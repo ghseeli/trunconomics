@@ -53,17 +53,18 @@ def test_weed_out_synonyms():
 # okay, large_data_set isn't really a method, and pytest doesn't follow this convention
 def test_large_data_set():
 	# set up things
-	word = "series"
-	article_name = "Riemann series theorem"
+	word = "mount"
+	article_name = "Mount Everest"
 	page = wiki.page(article_name)
 	content = page.content
 	reader = ArticleReader()
 	word_list = reader.get_word_list(content)
 	association_radius = 5
-	strong_threshold = 9.0
-	weak_theshold = 1.0
+	strong_threshold = 1.0
+	weak_theshold = 1000.0
 	# do
 	assoc_dic = make_assoc_dic(word_list, association_radius)
+	print(json.dumps(assoc_dic, indent=4))
 	potential_synonyms = get_potential_synonyms(word_list, assoc_dic, word, strong_threshold, weak_theshold)
 	synonyms = weed_out_synonyms(word, potential_synonyms)
 	print(synonyms)
