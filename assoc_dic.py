@@ -35,9 +35,9 @@ class AssocDic:
                 before_block.reverse()
                 # Feed blocks into counter
                 if word not in self.assoc_dic:
-                    self.assoc_dic[word] = dict()
+                    self.assoc_dic[word] = (dict(),0)
                 for block in (before_block, after_block):
-                    self.assoc_dic[word] = self.add_block_to_dic(self.assoc_dic[word], block)
+                    self.assoc_dic[word] = (self.add_block_to_dic(self.assoc_dic[word][0], block), self.assoc_dic[word][1]+1)
 
     def add_block_to_dic(self, word_dic, block):
         association = 10.0
@@ -48,9 +48,12 @@ class AssocDic:
             association = association/2.0
         return word_dic
 
-    def get(self, key, or_else = None):
+    def _total_get(self, key, or_else = None):
         clean_key = self.cleaner.clean_word(key)
-        return self.assoc_dic.get(clean_key, or_else)
+        return copy.deepcopy(self.assoc_dic.get(clean_key, or_else))
+    
+    def get(self, key, or_else = None):
+        return self._total_get(key, or_else)[0]
 
     def __getitem__(self, key):
         result = self.get(key)
@@ -58,5 +61,12 @@ class AssocDic:
             raise KeyError(key)
         return result
 
+    def get_word_frequency(self, key):
+        return self._total_get(key)[1]
+
+    def get_normalized_dict(self, key):
+        (unnormalized_dict, freq)  = self._total_get(key)
+        return {k:(unnormalized_dict[k]/freq) for k in unnormalized_dict}
+    
     def is_non_word(self, word):
         return word in self.assoc_dic

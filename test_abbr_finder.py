@@ -1,6 +1,7 @@
 import pytest
 import json
 from abbr_finder import *
+from assoc_dic import *
 
 import mediawikiapi as wiki
 from article_reader import ArticleReader
@@ -24,7 +25,7 @@ def test_make_assoc_dic():
 def test_get_strong_associates():
     sentence = 'bla bla the characteristic of a field is p	The char of a field is p'
     word_list = sentence.split()
-    assoc_dic = make_assoc_dic(word_list, 2)
+    assoc_dic = AssocDic(2, [word_list])
     strong_assoc = get_strong_associates(assoc_dic, "characteristic", 1, 9.0)
     assert strong_assoc == {'the', 'of'}
 
@@ -38,8 +39,8 @@ def test_get_strong_associates():
 def test_get_potential_synonyms():
     sentence = 'bla bla the characteristic of a field is p	the char of a field is p'
     word_list = sentence.split()
-    assoc_dic = make_assoc_dic(word_list, 2)
-    print(json.dumps(assoc_dic, indent=4))
+    assoc_dic = AssocDic(2, [word_list])
+    print(json.dumps(assoc_dic.assoc_dic, indent=4))
     potential_synonyms = get_potential_synonyms(word_list, assoc_dic, "characteristic", 2.0, 9.0)
     assert potential_synonyms == {'characteristic', 'field', 'char', 'is', 'p', 'bla', 'a'}
 
@@ -48,23 +49,23 @@ def test_weed_out_synonyms():
     word = "characteristic"
     potential_synonyms = {'characteristic', 'field', 'char', 'is', 'p', 'bla', 'a'}
     synonyms = weed_out_synonyms(word, potential_synonyms)
-    assert synonyms == {'characteristic', 'char', 'is', 'a', 'p'}
+    assert synonyms == {'characteristic', 'char', 'is', 'a'}
 
 # okay, large_data_set isn't really a method, and pytest doesn't follow this convention
 def test_large_data_set():
     # set up things
-    word = "mount"
+    word = "mountain"
     article_name = "Mount Everest"
     page = wiki.page(article_name)
     content = page.content
     reader = ArticleReader()
     word_list = reader.get_word_list(content)
     association_radius = 5
-    strong_threshold = 9.0
-    weak_theshold = 1.0
+    strong_threshold = None
+    weak_theshold = None
     # do
-    assoc_dic = make_assoc_dic(word_list, asosciation_radius)
-    print(json.dumps(assoc_dic, indent=4))                               
+    assoc_dic = AssocDic(association_radius, [word_list])
+    print(json.dumps(assoc_dic.assoc_dic, indent=4))                               
     potential_synonyms = get_potential_synonyms(word_list, assoc_dic, word, strong_threshold, weak_theshold)
     synonyms = weed_out_synonyms(word, potential_synonyms)
     print(synonyms)
