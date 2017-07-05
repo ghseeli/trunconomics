@@ -1,8 +1,12 @@
 import pandas
 import Levenshtein as lev
+
 import font_size_calculator
 
+
 class TruncatorTester:
+
+
     def test_file(self, result_csv_filepath, font_filepath=None):
         raw_data = pandas.read_csv(result_csv_filepath, names = ["Word", "Truncation"])
         return self.test_data_frame(raw_data, font_filepath)

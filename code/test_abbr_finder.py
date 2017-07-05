@@ -1,9 +1,10 @@
-import pytest
 import json
-from abbr_finder import *
-from assoc_dic import *
 
+import pytest
 import mediawikiapi as wiki
+
+from abbr_finder import *
+from assoc_dic import AssocDic
 from article_reader import ArticleReader
 
 def test_make_block():
@@ -31,11 +32,11 @@ def test_get_strong_associates():
 
     strong_assoc = get_strong_associates(assoc_dic, "characteristic", 1, 2.0)
     assert strong_assoc == {'the', 'of', 'bla', 'a'}
-       
+
     strong_assoc = get_strong_associates(assoc_dic, "characteristic", 2, 9.0)
     assert strong_assoc == {'the','of', 'bla', 'characteristic', 'a', 'p', 'char', 'field'}
 
-    
+
 def test_get_potential_synonyms():
     sentence = 'bla bla the characteristic of a field is p	the char of a field is p'
     word_list = sentence.split()
@@ -65,7 +66,7 @@ def test_large_data_set():
     weak_theshold = None
     # do
     assoc_dic = AssocDic(association_radius, [word_list])
-    print(json.dumps(assoc_dic.assoc_dic, indent=4))                               
+    print(json.dumps(assoc_dic.assoc_dic, indent=4))
     potential_synonyms = get_potential_synonyms(word_list, assoc_dic, word, strong_threshold, weak_theshold)
     synonyms = weed_out_synonyms(word, potential_synonyms)
     print(synonyms)

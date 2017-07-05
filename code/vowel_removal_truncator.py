@@ -1,9 +1,12 @@
 import pandas
 
+
 class VowelRemovalTruncator:
+
+
     def __init__(self):
         self.vowels = {'a','e','i','o','u','A','E','I','O','U'}
-        
+
     def truncate_word_series(self, word_series):
         truncations = pandas.Series([self.truncate_word(word) for word in word_series])
         d = {'Word' : word_series, "Truncation" : truncations}

@@ -1,7 +1,11 @@
-import pygame
 import string
 
+import pygame
+
+
 class FontSizeCalculator:
+
+
     def __init__(self):
         pygame.font.init()
 
@@ -17,6 +21,3 @@ class FontSizeCalculator:
         all_chars = string.printable
         char_list = list(all_chars)
         return self.size_of_many_strings(font_filepath, char_list)
-
-
-# please delete me

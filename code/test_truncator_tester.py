@@ -1,4 +1,5 @@
 import pytest
+
 from truncator_tester import *
 
 def test_init():
