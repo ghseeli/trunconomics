@@ -9,15 +9,17 @@ def fetch_wiki_article(name):
     """ This shows how to fetch wikipedia articles: https://pypi.python.org/pypi/mediawikiapi/1.0
 The documentation is here: https://github.com/lehinevych/MediaWikiAPI/tree/master/docs/source (or actually, you should build it with sphinx if you really want to see it correctly)
 """
-    article = wiki.page(article_name)
-    content = article.content
+    page = wiki.page(name)
+    content = page.content
     return content
 
 def fetch_arxiv_article(name):
     """ Fetch article from guava server """
-    """ Maybe we can set up a static file server for articles  on guava, and then just request them?  With wget? """
-    command = ['curl', 'learnnation.org/articles/{}.tex'.format(name)]
-    content = subprocess.run(command, check=True, stdout=subprocess.PIPE)
+    url = 'learnnation.org/articles/{}.tex'.format(name)
+    command = ['curl', url]
+    completed_process = subprocess.run(command, check=True, stdout=subprocess.PIPE)
+    # convert bytes object to str object with .decode()
+    content = completed_process.stdout.decode()
     return content
 
 
