@@ -16,7 +16,7 @@ class NoLowerCaseWordCleaner:
 
 
     def clean(self, list_of_words):
-        return [self.clean_word(word) for word in list_of_words]
+        return [self.clean_word(word) for word in list_of_words if isinstance(word, str)]
 
     def clean_word(self, word):
         return word.lower()
@@ -45,7 +45,8 @@ class AssocDic:
                 if word not in self.assoc_dic:
                     self.assoc_dic[word] = (dict(),0)
                 for block in (before_block, after_block):
-                    self.assoc_dic[word] = (self.add_block_to_dic(self.assoc_dic[word][0], block), self.assoc_dic[word][1]+1)
+                    self.assoc_dic[word] = (self.add_block_to_dic(self.assoc_dic[word][0], block), self.assoc_dic[word][1])
+                self.assoc_dic[word] = (self.assoc_dic[word][0], self.assoc_dic[word][1]+1)
 
     def add_block_to_dic(self, word_dic, block):
         association = 10.0
@@ -58,7 +59,7 @@ class AssocDic:
 
     def _total_get(self, key, or_else = None):
         clean_key = self.cleaner.clean_word(key)
-        return copy.deepcopy(self.assoc_dic.get(clean_key, (or_else, None)))
+        return copy.deepcopy(self.assoc_dic.get(clean_key, (or_else, 0)))
 
     def get(self, key, or_else = None):
         return self._total_get(key, or_else)[0]
