@@ -1,5 +1,5 @@
 #!/bin/zsh
-
+# Besides being an install script, this is useful as a (hopefully) exhaustive list of dependencies.
 
 # Install Levenshtein (but import as 'Levenshtein' in python)
 pip3 install python-Levenshtein

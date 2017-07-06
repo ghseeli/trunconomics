@@ -1,6 +1,9 @@
 import copy
 
+
 class Block:
+
+
     def __init__(self, word_list, middle_index, radius):
         start = max(0, middle_index - radius)
         end = min(len(word_list), middle_index + radius+1)
@@ -8,15 +11,20 @@ class Block:
         self.word = word_list[middle_index]
         self.after_block = word_list[middle_index+1:end]
 
+
 class NoLowerCaseWordCleaner:
+
+
     def clean(self, list_of_words):
         return [self.clean_word(word) for word in list_of_words]
-    
+
     def clean_word(self, word):
         return word.lower()
-        
+
 
 class AssocDic:
+
+
     def __init__(self, association_radius, corpus=[], cleaner=None):
         if cleaner is None:
             cleaner = NoLowerCaseWordCleaner()
@@ -51,7 +59,7 @@ class AssocDic:
     def _total_get(self, key, or_else = None):
         clean_key = self.cleaner.clean_word(key)
         return copy.deepcopy(self.assoc_dic.get(clean_key, (or_else, None)))
-    
+
     def get(self, key, or_else = None):
         return self._total_get(key, or_else)[0]
 
@@ -67,6 +75,6 @@ class AssocDic:
     def get_normalized_dict(self, key):
         (unnormalized_dict, freq)  = self._total_get(key)
         return {k:(unnormalized_dict[k]/freq) for k in unnormalized_dict}
-    
+
     def is_non_word(self, word):
         return word in self.assoc_dic

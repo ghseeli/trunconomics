@@ -9,6 +9,7 @@ http://pyparsing.wikispaces.com/Examples
 from pyparsing import Word, CharsNotIn, Group, Optional, Suppress, ZeroOrMore
 
 
+# This was originally designed for wikipedia articles.  But now we probably want to subclass in order to read different types of articles.
 class ArticleReader:
 
 

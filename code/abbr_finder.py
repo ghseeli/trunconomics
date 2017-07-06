@@ -1,8 +1,9 @@
 """ These functions take in a list of words (from a corpus), and tries to identify abbreviations by looking at which words appear close to each other.
 """
 import copy
-import Levenshtein as lev
 from statistics import median,stdev
+
+import Levenshtein as lev
 
 def make_block(word_list, middle_index, radius):
     start = max(0, middle_index - radius)
@@ -14,7 +15,7 @@ def sanitize_word_list(word_list):
 
 def sanitize_word(word):
     return word.lower()
-    
+
 def make_assoc_dic(word_list, association_radius):
     """ Make an association dictionary """
     word_list = sanitize_word_list(word_list)
