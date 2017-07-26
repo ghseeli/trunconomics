@@ -1,4 +1,5 @@
 #!/bin/zsh
+# This install script is specific to Mac OSX.
 # Besides being an install script, this is useful as a (hopefully) exhaustive list of dependencies.
 
 # Install Levenshtein (but import as 'Levenshtein' in python)
