@@ -25,3 +25,16 @@ def test_fetch_arxiv_article():
     correct_content_path = path.join(DATA_DIR, '9711102.tex')
     correct_content = Path(correct_content_path).read_text()
     assert content == correct_content
+
+def test_Article_init():
+    name = 'Riemann series theorem'
+    article = Article(name, 'wiki')
+    assert isinstance(article, Article)
+
+def test_Article_content():
+    name = 'Riemann series theorem'
+    article = Article(name, 'wiki')
+    content = article.content
+    riemann_path = path.join(DATA_DIR, 'riemann_series_theorem.txt')
+    correct_content = Path(riemann_path).read_text()
+    assert content == correct_content

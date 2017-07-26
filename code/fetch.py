@@ -1,4 +1,4 @@
-# This creates a general content fetcher.
+""" This creates a general content fetcher. """
 import subprocess
 
 import mediawikiapi as wiki
@@ -30,7 +30,7 @@ class Article:
         """ name -- the name of the article you want
         archive -- the archive you want the article from (wiki, arXiv)
         """
-        archive = archive.lower().trim()
+        archive = archive.lower().strip()
         if archive in {'wiki', 'wikipedia'}:
             self.content = fetch_wiki_article(name)
         elif archive == 'arxiv':
