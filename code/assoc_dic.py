@@ -59,7 +59,8 @@ class AssocDic:
 
     def _total_get(self, key, or_else = None):
         clean_key = self.cleaner.clean_word(key)
-        return copy.deepcopy(self.assoc_dic.get(clean_key, (or_else, 0)))
+        result = self.assoc_dic.get(clean_key, (or_else, 0))
+        return copy.deepcopy(result)
 
     def get(self, key, or_else = None):
         return self._total_get(key, or_else)[0]
