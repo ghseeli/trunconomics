@@ -1,4 +1,9 @@
 import json
+from os import path
+import sys
+THIS_DIR = path.dirname(path.abspath(__file__))
+PYTHON_DIR = path.dirname(THIS_DIR)
+sys.path.insert(0, PYTHON_DIR)
 
 import pytest
 import mediawikiapi as wiki
