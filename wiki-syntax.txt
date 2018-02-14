@@ -1,0 +1,30 @@
+# This aims to be a pure EBNF syntax file for parsing Wikipedia.  Or at least paragraphs of text, to start out...
+
+## whitespace
+NEWLINE
+TAB
+WhitespaceChar = " "|NEWLINE|TAB
+Whitespace = OneOrMore(WhitespaceChar)
+
+## subpunctuation (punctuation inside of a sentence)
+SubPuncChar = " -"|"- "|","|";"|":"
+SubPunc = OneOrMore(SubPuncChar)
+
+## punctuation
+PuncChar = "."|"?"|"!"
+Punc = OneOrMore(PuncChar)
+
+## words
+WordChar = any char not listed above
+Word = OneOrMore(WordChar)
+
+## subsentences
+SubSentenceWords = Word + ZeroOrMore(WhitespaceChar + Word)
+SubSentenceNonTerminal = SubSentenceWords + SubPuncChar
+SubSentenceTerminal = SubSentenceWords + PuncChar
+
+## sentences
+Sentence = ZeroOrMore(SubSentenceNonTerminal) + SubSentenceTerminal
+
+## many sentences
+Article = Sentence + ZeroOrMore(Whitespace + Sentence)
