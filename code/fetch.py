@@ -5,7 +5,7 @@ import mediawikiapi as wiki
 from pathlib import Path
 
 
-def fetch_wiki_article(name):
+def _fetch_wiki_article(name):
     """ This shows how to fetch wikipedia articles: https://pypi.python.org/pypi/mediawikiapi/1.0
 The documentation is here: https://github.com/lehinevych/MediaWikiAPI/tree/master/docs/source (or actually, you should build it with sphinx if you really want to see it correctly)
 """
@@ -13,7 +13,7 @@ The documentation is here: https://github.com/lehinevych/MediaWikiAPI/tree/maste
     content = page.content
     return content
 
-def fetch_arxiv_article(name):
+def _fetch_arxiv_article(name):
     """ Fetch article from guava server """
     url = 'learnnation.org/articles/{}.tex'.format(name)
     command = ['curl', url]
@@ -32,9 +32,9 @@ class Article:
         """
         archive = archive.lower().strip()
         if archive in {'wiki', 'wikipedia'}:
-            self.content = fetch_wiki_article(name)
+            self.content = _fetch_wiki_article(name)
         elif archive == 'arxiv':
-            self.content = fetch_arxiv_article(name)
+            self.content = _fetch_arxiv_article(name)
         else:
             raise ValueError('Archive not recognized.')
 

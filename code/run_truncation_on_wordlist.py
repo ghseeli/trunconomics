@@ -17,8 +17,8 @@ class TruncationOnWordlistRunner:
         truncations_df = truncator.truncate_word_series(self.wordlist)
         return truncations_df
 
-    def save_output_to_csv(self, truncations, save_path = None):
-        if save_path == None:
+    def save_output_to_csv(self, truncations, save_path=None):
+        if save_path is None:
             save_path = self.save_path
-        return truncations.to_csv(save_path, index = False, header = False)
+        return truncations.to_csv(save_path, index=False, header=False)
 
