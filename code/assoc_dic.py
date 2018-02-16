@@ -1,6 +1,5 @@
-import copy
-
-from statistics import median,stdev
+from copy import deepcopy
+from statistics import median, stdev
 
 
 class Block:
@@ -132,11 +131,9 @@ class AssocData:
                 strong_threshold = word_dic.get_average_score() + word_dic.get_stdev_score()
             strong_associates = {a for a in word_dic.keys() if word_dic[a] >= strong_threshold}
             # recurse
-            more_strong_associates = set()
-            for strong_associate in strong_associates:
+            for strong_associate in deepcopy(strong_associates):
                 next_level_strong_associates = self.get_strong_associates(strong_associate, distance - 1, strong_threshold)
-                more_strong_associates.update(next_level_strong_associates)
-            strong_associates.update(more_strong_associates)
+                strong_associates.update(next_level_strong_associates)
         return strong_associates
 
     def get_potential_synonyms(self, word, strong_threshold=None, weak_threshold=None):
