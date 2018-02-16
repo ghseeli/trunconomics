@@ -1,6 +1,8 @@
 from copy import deepcopy
 from statistics import median, stdev
 
+from config import default_weight_func
+
 
 class Block:
 
@@ -8,15 +10,15 @@ class Block:
     def __init__(self, word_list, middle_index, radius):
         start = max(0, middle_index - radius)
         end = min(len(word_list), middle_index + radius+1)
-        self.before_block = word_list[start:middle_index]
+        self.before_wing = word_list[start:middle_index]
         self.word = word_list[middle_index]
-        self.after_block = word_list[middle_index+1:end]
-        # we want to read before-block words from *closest to farthest* distance from the middle word:
-        self.before_block.reverse()
+        self.after_wing = word_list[middle_index+1:end]
+        # we want to read before_wing words from *closest to farthest* distance from the middle word:
+        self.before_wing.reverse()
 
     def tuple(self):
         """ This function makes testing easier and gives a more human friendly way to see the block. """
-        return (self.before_block, self.word, self.after_block)
+        return (self.before_wing, self.word, self.after_wing)
 
     def __str__(self):
         return str(self.tuple())
@@ -35,17 +37,26 @@ class DefaultWordCleaner:
 class AssocDic(dict):
 
 
-    def __init__(self):
+    def __init__(self, weight_func=default_weight_func):
         self.frequency = 0
+        self.weight_func = weight_func
         super()
 
-    def add_block(self, block):
-        association = 10.0
-        for associated_word in block:
+    def add_wing(self, wing):
+        for i, associated_word in enumerate(wing):
             if associated_word not in self:
                 self[associated_word] = 0.0
-            self[associated_word] += association
-            association = association/2.0
+            distance = i + 1
+            self[associated_word] += self.weight_func(distance)
+
+    def add_block(self, block):
+        self.add_wing(block.before_wing)
+        self.add_wing(block.after_wing)
+
+    def restricted(self, keys):
+        """ Returns a copy of self but only with the desired keys. """
+        restricted_dic = {k:v for k,v in self.items() if k in keys}
+        return restricted_dic
 
     def get_average_score(self):
         average = 0
@@ -64,7 +75,9 @@ class AssocDic(dict):
 class AssocData:
 
 
-    def __init__(self, association_radius=5, corpus=[], cleaner=None):
+    def __init__(self, association_radius=5, corpus=[], cleaner=None, weight_func=default_weight_func):
+        # set weight function
+        self.weight_func = weight_func
         # clean corpus
         if cleaner is None:
             cleaner = DefaultWordCleaner()
@@ -80,14 +93,12 @@ class AssocData:
         for middle_index in range(len(word_list)):
             # Find the blocks
             block = Block(word_list, middle_index, self.radius)
-            (before_block, word, after_block) = (block.before_block, block.word, block.after_block)
-            # Feed blocks into counter
+            word = block.word
+            # Feed block into counter
             if not self.has(word):
                 self.new(word)
-            for block in (before_block, after_block):
-                self[word].add_block(block)
-                # only add half since the word will be double counted
-                self[word].frequency += 0.5
+            self[word].add_block(block)
+            self[word].frequency += 1
 
     def has(self, key):
         """ Detect if key in dictionary """
@@ -98,7 +109,7 @@ class AssocData:
         """ Add new key to dictionary """
         if self.has(key):
             raise KeyError
-        self.word_to_dic[key] = AssocDic()
+        self.word_to_dic[key] = AssocDic(weight_func=self.weight_func)
 
     def _total_get(self, key, or_else=None):
         clean_key = self.cleaner.clean_word(key)
@@ -151,6 +162,6 @@ class AssocData:
         if weak_threshold is None:
             weak_threshold = word_dic.get_average_score() - 0.01 * word_dic.get_stdev_score()
         neighbors = set(word_dic.keys())
-        non_weak_neighbors = {n for n in neighbors if word_dic[n] > weak_threshold}
+        non_weak_neighbors = {n for n in neighbors if word_dic[n] >= weak_threshold}
         synonyms = strong_assoc2 - non_weak_neighbors
         return synonyms

@@ -7,19 +7,18 @@ from parse import ArticleReader
 from assoc_dic import AssocData
 from abbr_finder import weed_out_synonyms, remove_too_long_words
 
-def find_truncations(word, article_name, archive):
+def find_truncations(word, article_name, archive, strong_threshold=None, weak_theshold=None):
     # set up things
     article = Article(article_name, archive)
     reader = ArticleReader()
     word_list = reader.get_word_list(article.content)
     association_radius = 5
-    strong_threshold = None
-    weak_theshold = None
     # do
     assoc_data = AssocData(association_radius, [word_list])
     potential_synonyms = assoc_data.get_potential_synonyms(word, strong_threshold, weak_theshold)
     synonyms = weed_out_synonyms(word, potential_synonyms)
     truncations = remove_too_long_words(word, synonyms)
+    # out = assoc_data[word].restricted(truncations) NO WE actually want dist 2 nieghbors to display
     return truncations
 
 def main(**kwargs):
@@ -39,5 +38,6 @@ def main(**kwargs):
 
 if __name__ == '__main__':
     # main(command='single article', word='mountain', article='Mount Everest', archive='wiki')
-    main(command='multi article', csv_path=path.join(DATA_DIR, 'word_and_wiki.csv'))
+    # main(command='multi article', csv_path=path.join(DATA_DIR, 'word_and_wiki.csv'))
+    main(command='single article', word='mister', article='Mr.', archive='wiki')
 
