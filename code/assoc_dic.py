@@ -9,9 +9,18 @@ class Block:
     def __init__(self, word_list, middle_index, radius):
         start = max(0, middle_index - radius)
         end = min(len(word_list), middle_index + radius+1)
-        self.before_block = word_list[start:middle_index].reverse()
+        self.before_block = word_list[start:middle_index]
         self.word = word_list[middle_index]
         self.after_block = word_list[middle_index+1:end]
+        # we want to read before-block words from *closest to farthest* distance from the middle word:
+        self.before_block.reverse()
+
+    def tuple(self):
+        """ This function makes testing easier and gives a more human friendly way to see the block. """
+        return (self.before_block, self.word, self.after_block)
+
+    def __str__(self):
+        return str(self.tuple())
 
 
 class DefaultWordCleaner:
@@ -56,7 +65,7 @@ class AssocDic(dict):
 class AssocData:
 
 
-    def __init__(self, association_radius, corpus=[], cleaner=None):
+    def __init__(self, association_radius=5, corpus=[], cleaner=None):
         # clean corpus
         if cleaner is None:
             cleaner = DefaultWordCleaner()
@@ -78,7 +87,8 @@ class AssocData:
                 self.new(word)
             for block in (before_block, after_block):
                 self[word].add_block(block)
-                self[word].frequency += 1
+                # only add half since the word will be double counted
+                self[word].frequency += 0.5
 
     def has(self, key):
         """ Detect if key in dictionary """
@@ -93,7 +103,7 @@ class AssocData:
 
     def _total_get(self, key, or_else=None):
         clean_key = self.cleaner.clean_word(key)
-        result = self.word_to_dic.get(clean_key, (or_else, 0))
+        result = self.word_to_dic.get(clean_key, or_else)
         return result
 
     def get(self, key, or_else=None):
@@ -120,11 +130,13 @@ class AssocData:
             word_dic = self[word]
             if strong_threshold is None:
                 strong_threshold = word_dic.get_average_score() + word_dic.get_stdev_score()
-            strong_associates = {associate for associate in word_dic.keys() if word_dic[associate] >= strong_threshold}
+            strong_associates = {a for a in word_dic.keys() if word_dic[a] >= strong_threshold}
             # recurse
+            more_strong_associates = set()
             for strong_associate in strong_associates:
                 next_level_strong_associates = self.get_strong_associates(strong_associate, distance - 1, strong_threshold)
-                strong_associates.update(next_level_strong_associates)
+                more_strong_associates.update(next_level_strong_associates)
+            strong_associates.update(more_strong_associates)
         return strong_associates
 
     def get_potential_synonyms(self, word, strong_threshold=None, weak_threshold=None):
