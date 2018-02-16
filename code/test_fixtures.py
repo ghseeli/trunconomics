@@ -6,14 +6,14 @@ basic_sentence = 'bla bla the characteristic of a field is p    The char of a fi
 
 class LazyAssocDic:
     def __init__(self, radius, corpus):
-        self.assoc_dic = None
+        self.assoc_data = None
         self.r = radius
         self.c = corpus
-        
-    def get_dict(self):
-        if self.assoc_dic is None:
-            self.assoc_dic = AssocDic(self.r, self.c)
-        return self.assoc_dic
 
-dic_gen = LazyAssocDic(2,[basic_word_list1])
+    def get_dict(self):
+        if self.assoc_data is None:
+            self.assoc_data = AssocData(self.r, self.c)
+        return self.assoc_data
+
+dic_gen = LazyAssocDic(2, [basic_word_list1])
 
