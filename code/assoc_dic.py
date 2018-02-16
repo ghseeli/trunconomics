@@ -68,7 +68,7 @@ class AssocData:
         for word_list in cleansed_corpus:
             self._update(word_list)
 
-    def _update(word_list):
+    def _update(self, word_list):
         for middle_index in range(len(word_list)):
             # Find the blocks
             block = Block(word_list, middle_index, self.radius)
@@ -127,7 +127,7 @@ class AssocData:
                 strong_associates.update(next_level_strong_associates)
         return strong_associates
 
-    def get_potential_synonyms(self, word, word_list, strong_threshold=None, weak_threshold=None):
+    def get_potential_synonyms(self, word, strong_threshold=None, weak_threshold=None):
         # NORMALIZATION HAPPENS HERE.  but i feel i can get easily confused, because get_strong_associates needs to be given a normalized threshold.  and how to remember that?
         # normalize the thresholds
         # word_list = sanitize_word_list(word_list)

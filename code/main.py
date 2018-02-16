@@ -1,6 +1,10 @@
+#!/usr/bin/env python3
+
 from config import *
 from fetch import Article
-from parse import ArticleReader()
+from parse import ArticleReader
+from assoc_dic import AssocData
+from abbr_finder import weed_out_synonyms, remove_too_long_words
 
 def main():
     # set up things
@@ -12,11 +16,11 @@ def main():
     strong_threshold = None
     weak_theshold = None
     # do
-    assoc_dic = AssocDic(association_radius, [word_list])
-    print(json.dumps(assoc_dic.assoc_dic, indent=4))
-    potential_synonyms = get_potential_synonyms(word_list, assoc_dic, word, strong_threshold, weak_theshold)
+    assoc_data = AssocData(association_radius, [word_list])
+    potential_synonyms = assoc_data.get_potential_synonyms(word, strong_threshold, weak_theshold)
     synonyms = weed_out_synonyms(word, potential_synonyms)
-    print(synonyms)
+    truncations = remove_too_long_words(synonyms)
+    print(truncations)
 
 if __name__ == '__main__':
     main()
