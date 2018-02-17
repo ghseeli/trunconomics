@@ -5,7 +5,7 @@ import sys
 
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
-from conf import CODE_DIR, DATA_DIR
+from conf import *
 
 def default_weight_func(distance):
     """ A linear or exponential decay function used for getting an association score between two words based on their distance. """

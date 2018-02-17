@@ -2,6 +2,7 @@
 truncation-brainstorm.webloc
 brainstorm.webloc
 ignore/
+test_outputs/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
