@@ -27,6 +27,25 @@ def test_make_block():
     assert b.tuple() == ([],'fox',[])
 
 
+# AssocDic
+def test_restricted():
+    # no restrictions really
+    word_list = ['The','quick','red','fox','jumped','over','the','brown','dog']
+    b = Block(word_list, len(word_list)-1, 3)
+    d = AssocDic()
+    d.add_block(b)
+    rd = d.restricted(['over', 'the', 'brown'])
+    assert set(d.keys()) == {'over', 'the', 'brown'}
+
+    # # no restrictions really
+    # word_list = ['The','quick','red','fox','jumped','over','the','brown','dog']
+    # b = Block(word_list, len(word_list)-1, 2)
+    # d = AssocDic()
+    # d.add_block(b)
+    # rd = d.restricted(['over', 'the', 'brown'])
+    # assert set(rd.keys()) == {'over', 'the', 'brown'}
+
+
 # AssocData
 def test_make_assoc_data():
     # basic init
@@ -57,9 +76,11 @@ def test_frequency():
     assert pos_result2 == 2
 
 def test_get_strong_associates():
+    def weight_func(dist):
+        return 10/2**(dist-1)
     sentence = 'bla bla the characteristic of a field is p  The char of a field is p'
     word_list = sentence.split()
-    ad = AssocData(2, [word_list])
+    ad = AssocData(2, [word_list], weight_func=weight_func)
     strong_assoc = ad.get_strong_associates("characteristic", 1, 9.0)
     assert strong_assoc == {'the', 'of'}
 
@@ -70,9 +91,11 @@ def test_get_strong_associates():
     assert strong_assoc == {'the','of', 'bla', 'characteristic', 'a', 'p', 'char', 'field'}
 
 def test_get_potential_synonyms():
+    def weight_func(dist):
+        return 10/2**(dist-1)
     sentence = 'bla bla the characteristic of a field is p  the char of a field is p'
     word_list = sentence.split()
-    ad = AssocData(2, [word_list])
+    ad = AssocData(2, [word_list], weight_func=weight_func)
     # print(json.dumps(assoc_data.assoc_data, indent=4))
     potential_synonyms = ad.get_potential_synonyms("characteristic", 2.0, 9.0)
     assert potential_synonyms == {'characteristic', 'field', 'char', 'is', 'p', 'bla', 'a'}
