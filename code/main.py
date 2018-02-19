@@ -36,7 +36,7 @@ def evaluate_truncations():
     # TODO: stop test_file from freezing/hanging indefinitely
     out = evaluator.test_file(
         path.join(OUT_DIR, "out.csv"),
-        None # "../fonts/Monaco.dfont"
+        "../fonts/Monaco.dfont"
     )
     return out
 
