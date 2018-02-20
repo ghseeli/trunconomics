@@ -29,7 +29,12 @@ def evaluate_truncations(**kwargs):
     # get truncations
     truncations = t.get_truncations(word)
     # get other stats
-    # TODO
+    evaluator = TruncatorEvaluator()
+    # run the following line if you want to.  commented out just bc its slow
+    # out = evaluator.test_file(
+    #     path.join(OUT_DIR, "out.csv"),
+    #     "../fonts/Monaco.dfont"
+    # )
     return truncations
 
 def main(**kwargs):
