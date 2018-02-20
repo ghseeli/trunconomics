@@ -10,7 +10,7 @@ from pyparsing import Word, CharsNotIn, Group, Optional, Suppress, ZeroOrMore
 
 
 # This was originally designed for wikipedia articles.  But now we probably want to subclass in order to read different types of articles.
-class ArticleReader:
+class CorpusReader:
 
 
     def __init__(self):
@@ -33,7 +33,7 @@ class ArticleReader:
 
         self.parser = content.parseString
 
-    def get_word_list(self, article_string):
+    def get_wordlist(self, article_string):
         parsed_data = self.parser(article_string)
         word_list = [group[0] for group in parsed_data]
         return word_list
